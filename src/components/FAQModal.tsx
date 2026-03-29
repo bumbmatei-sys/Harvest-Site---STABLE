@@ -67,7 +67,7 @@ const FAQModal: React.FC<FAQModalProps> = ({ isOpen, onClose }) => {
       question: "How does Harvest AI work?",
       answer: (
         <>
-          Harvest AI is a specialized companion designed to answer the questions of "baby Christians" in a safe, biblically sound environment. Unlike generic AI tools, <strong className="text-gray-900 dark:text-white">Harvest AI is locally trained using healthy, trusted theological resources.</strong> We have carefully curated the data it learns from to ensure it provides life-giving, orthodox answers. Its primary function is to point users back to the Word of God, the Holy Spirit, and the local church.
+          Harvest AI is a specialized companion designed to answer the questions of &quot;baby Christians&quot; in a safe, biblically sound environment. Unlike generic AI tools, <strong className="text-gray-900 dark:text-white">Harvest AI is locally trained using healthy, trusted theological resources.</strong> We have carefully curated the data it learns from to ensure it provides life-giving, orthodox answers. Its primary function is to point users back to the Word of God, the Holy Spirit, and the local church.
         </>
       )
     },

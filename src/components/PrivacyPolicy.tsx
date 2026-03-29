@@ -32,7 +32,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
                         <li><strong>Account Information:</strong> Name, email address, and basic profile details provided during registration.</li>
                         <li><strong>Spiritual Progress:</strong> Data regarding your progress in all courses to help you pick up where you left off.</li>
                         <li><strong>Location Data:</strong> With your permission, we use your GPS location solely to display the closest registered churches and communities on our map.</li>
-                        <li><strong>AI Interactions:</strong> Conversations with the Harvest AI are processed to provide theological guidance. These interactions are stored to improve the AI's accuracy and are never sold to third parties.</li>
+                        <li><strong>AI Interactions:</strong> Conversations with the Harvest AI are processed to provide theological guidance. These interactions are stored to improve the AI&apos;s accuracy and are never sold to third parties.</li>
                     </ul>
 
                     <h3 className="text-xl font-bold text-gray-900 mb-4">How We Use Your Information</h3>

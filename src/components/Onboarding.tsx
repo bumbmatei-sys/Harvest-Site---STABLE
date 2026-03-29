@@ -194,7 +194,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       <div className="max-w-md w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden z-10 relative">
         <div className="p-8 sm:p-12">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-white mb-2">Let's get started!</h1>
+            <h1 className="text-3xl font-black text-white mb-2">Let&apos;s get started!</h1>
             <p className="text-gray-300 text-sm mb-4">
               We need a little more info so you can get personalized announcements and posts based on your city.
             </p>

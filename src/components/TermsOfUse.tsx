@@ -54,7 +54,7 @@ const TermsOfUse: React.FC<TermsOfUseProps> = ({ onBack }) => {
                     
                     <h3 className="text-xl font-bold text-gray-900 mb-4">7. Limitation of Liability</h3>
                     <p>
-                        Harvest App provides these tools "as is." We are not liable for any interruptions in service or for the accuracy of user-generated content within the community sections of the app.
+                        Harvest App provides these tools &quot;as is.&quot; We are not liable for any interruptions in service or for the accuracy of user-generated content within the community sections of the app.
                     </p>
                 </div>
              </div>

@@ -64,7 +64,7 @@ const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
     <div className="space-y-6 pb-24">
       <div className="flex justify-between items-end mb-2">
         <div>
-          <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white">Available Courses</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Available Courses</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Expand your knowledge and faith.</p>
         </div>
       </div>

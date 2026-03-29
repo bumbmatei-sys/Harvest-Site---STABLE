@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Plus } from 'lucide-react';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import RichTextEditor from './RichTextEditor';
+import AdminAuthorEditor from './AdminAuthorEditor';
+import AdminCurriculumEditor from './AdminCurriculumEditor';
 
 export interface Course {
   id?: string;
@@ -24,13 +26,14 @@ interface AdminCourseEditorProps {
 const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }) => {
   const [title, setTitle] = useState(course?.title || '');
   const [author, setAuthor] = useState(course?.author || '');
-  const [category, setCategory] = useState(course?.category || 'Agronomy');
+  const [category, setCategory] = useState(course?.category || '');
   const [description, setDescription] = useState(course?.description || '');
   const [coverImage, setCoverImage] = useState(course?.coverImage || '');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-
-  const categories = ['Agronomy', 'Theology', 'Leadership', 'Music', 'Technology'];
+  const [showAuthorEditor, setShowAuthorEditor] = useState(false);
+  const [currentStep, setCurrentStep] = useState<'details' | 'curriculum'>('details');
+  const [savedCourseId, setSavedCourseId] = useState<string | null>(course?.id || null);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -60,15 +63,19 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
         updatedAt: new Date().toISOString(),
       };
 
+      let newCourseId = course?.id;
       if (course?.id) {
         await updateDoc(doc(db, 'courses', course.id), courseData);
       } else {
-        await addDoc(collection(db, 'courses'), {
+        const docRef = await addDoc(collection(db, 'courses'), {
           ...courseData,
           createdAt: new Date().toISOString(),
         });
+        newCourseId = docRef.id;
       }
-      onClose();
+      
+      setSavedCourseId(newCourseId || null);
+      setCurrentStep('curriculum');
     } catch (err: any) {
       console.error('Error saving course:', err);
       setError(err.message || 'Failed to save course');
@@ -76,6 +83,16 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
       setIsSaving(false);
     }
   };
+
+  if (currentStep === 'curriculum' && savedCourseId) {
+    return (
+      <AdminCurriculumEditor 
+        courseId={savedCourseId} 
+        courseTitle={title} 
+        onBack={() => setCurrentStep('details')} 
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#f8f9fa] dark:bg-[#1a1d27]">
@@ -109,7 +126,7 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
               type="text" 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Sustainable Harvesting 101"
+              placeholder="Course Title"
               className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-transparent rounded-xl text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#252a36] focus:ring-2 focus:ring-[#d4a017] focus:border-transparent outline-none transition-all text-base"
             />
           </div>
@@ -123,11 +140,12 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Course Author"
-                className="flex-1 px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-transparent rounded-xl text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#252a36] focus:ring-2 focus:ring-[#d4a017] focus:border-transparent outline-none transition-all text-base"
+                className="flex-1 min-w-0 px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-transparent rounded-xl text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#252a36] focus:ring-2 focus:ring-[#d4a017] focus:border-transparent outline-none transition-all text-base"
               />
               <button 
                 type="button"
-                className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setShowAuthorEditor(true)}
+                className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-[#d4a017] hover:bg-[#b8860b] text-white rounded-md transition-colors shadow-md"
               >
                 <Plus size={20} />
               </button>
@@ -137,30 +155,13 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
           {/* Category */}
           <div className="space-y-2">
             <label className="block text-xs font-bold tracking-wider text-gray-900 dark:text-white uppercase">Category</label>
-            <div className="relative">
-              <select 
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-transparent rounded-xl text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#252a36] focus:ring-2 focus:ring-[#d4a017] focus:border-transparent outline-none transition-all text-base appearance-none"
-              >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m6 9 6 6 6-6"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <label className="block text-xs font-bold tracking-wider text-gray-900 dark:text-white uppercase">Description</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-              <RichTextEditor content={description} onChange={setDescription} />
-            </div>
+            <input 
+              type="text" 
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Agronomy"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-[#1a1d27] border border-transparent rounded-xl text-gray-900 dark:text-white focus:bg-white dark:focus:bg-[#252a36] focus:ring-2 focus:ring-[#d4a017] focus:border-transparent outline-none transition-all text-base"
+            />
           </div>
 
           {/* Cover Image */}
@@ -186,6 +187,14 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
             )}
           </div>
 
+          {/* Description */}
+          <div className="space-y-2">
+            <label className="block text-xs font-bold tracking-wider text-gray-900 dark:text-white uppercase">Description</label>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+              <RichTextEditor content={description} onChange={setDescription} />
+            </div>
+          </div>
+
           {/* Action Button */}
           <div className="pt-6">
             <button 
@@ -200,6 +209,17 @@ const AdminCourseEditor: React.FC<AdminCourseEditorProps> = ({ course, onClose }
 
         </div>
       </div>
+
+      {/* Author Editor Modal */}
+      {showAuthorEditor && (
+        <AdminAuthorEditor 
+          onClose={() => setShowAuthorEditor(false)} 
+          onSave={(newAuthorName) => {
+            setAuthor(newAuthorName);
+            setShowAuthorEditor(false);
+          }} 
+        />
+      )}
     </div>
   );
 };

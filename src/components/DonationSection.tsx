@@ -74,7 +74,7 @@ const DonationSection: React.FC = () => {
                             However, building high-level technology, training advanced AI, and maintaining global servers requires significant resources.
                         </p>
                         <p className="text-gray-200 font-semibold">
-                            When you give, you aren't just paying for software. You are sponsoring the discipleship of a new believer. You are ensuring that when a hand goes up for Jesus, a digital safety net is there to catch them.
+                            When you give, you aren&apos;t just paying for software. You are sponsoring the discipleship of a new believer. You are ensuring that when a hand goes up for Jesus, a digital safety net is there to catch them.
                         </p>
                         <p className="italic text-primary/80">
                             Help us keep this tool free for the billion-soul harvest.

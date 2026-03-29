@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --font-sans: var(--font-sans);
+    --font-sans: 'Inter', sans-serif;
     --color-primary: #B8860B;
     --color-secondary: #8E8E93;
     --color-background-light: #FFFFFF;

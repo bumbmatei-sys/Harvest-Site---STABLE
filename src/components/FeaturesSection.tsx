@@ -210,8 +210,8 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) => {
                             <span className="material-symbols-outlined text-[#D4AF37] text-xs">smart_toy</span>
                          </div>
                          <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-sm py-4 px-5 text-sm shadow-sm max-w-[90%] leading-relaxed border border-gray-200/50">
-                            <p className="mb-3"><span className="font-bold">That's a beautiful opportunity.</span> Scripture tells us in <span className="font-bold">Ephesians 2:8-9</span> that grace is a gift, not something we earn.</p>
-                            <p>Try sharing the parable of the Prodigal Son. It illustrates that the Father's love is waiting, regardless of our past.</p>
+                            <p className="mb-3"><span className="font-bold">That&apos;s a beautiful opportunity.</span> Scripture tells us in <span className="font-bold">Ephesians 2:8-9</span> that grace is a gift, not something we earn.</p>
+                            <p>Try sharing the parable of the Prodigal Son. It illustrates that the Father&apos;s love is waiting, regardless of our past.</p>
                          </div>
                       </div>
                       

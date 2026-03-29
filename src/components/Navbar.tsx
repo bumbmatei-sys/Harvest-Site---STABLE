@@ -103,35 +103,35 @@ const Navbar: React.FC<NavbarProps> = ({ isHome = true, onNavigate }) => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <a 
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer" 
+              className="text-white hover:text-white text-sm font-medium transition-colors cursor-pointer" 
               href="#challenge"
               onClick={(e) => scrollToSection(e, 'challenge')}
             >
               The Challenge
             </a>
             <a 
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer" 
+              className="text-white hover:text-white text-sm font-medium transition-colors cursor-pointer" 
               href="#core"
               onClick={(e) => scrollToSection(e, 'core')}
             >
               Features
             </a>
             <a 
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer" 
+              className="text-white hover:text-white text-sm font-medium transition-colors cursor-pointer" 
               href="#roadmap"
               onClick={(e) => scrollToSection(e, 'roadmap')}
             >
               Roadmap
             </a>
             <a 
-              className="text-gray-300 hover:text-white text-sm font-medium transition-colors cursor-pointer" 
+              className="text-white hover:text-white text-sm font-medium transition-colors cursor-pointer" 
               href="#vision"
               onClick={(e) => scrollToSection(e, 'vision')}
             >
               The Vision
             </a>
             <a 
-              className="bg-primary text-[#0b1121] px-6 py-2.5 rounded-full text-sm font-bold hover:bg-[#d4a017] transition-all duration-100 transform hover:scale-105 shadow-[0_0_15px_rgba(184,134,11,0.3)] ml-2"
+              className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-[#d4a017] transition-all duration-100 transform hover:scale-105 shadow-[0_0_15px_rgba(184,134,11,0.3)] ml-2"
               href="#partner"
               onClick={(e) => scrollToSection(e, 'partner')}
             >

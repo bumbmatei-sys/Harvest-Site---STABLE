@@ -32,7 +32,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ course, onBack }) => {
           <span className="inline-block bg-[#d4a017] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
             {course.category}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold mb-2 leading-tight">{course.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 leading-tight">{course.title}</h1>
           <div className="flex items-center gap-4 text-sm text-gray-300">
             <div className="flex items-center gap-1.5">
               <User size={16} />

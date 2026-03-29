@@ -76,7 +76,7 @@ const PrivacyTermsModal: React.FC<PrivacyTermsModalProps> = ({ isOpen, onClose }
                     <strong className="text-gray-900 dark:text-white">Location Data:</strong> With your permission, we use your GPS location solely to display the closest registered churches and communities on our map.
                   </li>
                   <li>
-                    <strong className="text-gray-900 dark:text-white">AI Interactions:</strong> Conversations with the Harvest AI are processed to provide theological guidance. These interactions are stored to improve the AI's accuracy and are never sold to third parties.
+                    <strong className="text-gray-900 dark:text-white">AI Interactions:</strong> Conversations with the Harvest AI are processed to provide theological guidance. These interactions are stored to improve the AI&apos;s accuracy and are never sold to third parties.
                   </li>
                 </ul>
               </div>
@@ -156,7 +156,7 @@ const PrivacyTermsModal: React.FC<PrivacyTermsModalProps> = ({ isOpen, onClose }
               <div>
                 <h4 className="text-base font-bold text-gray-900 dark:text-white mb-2">7. Limitation of Liability</h4>
                 <p>
-                  Harvest App provides these tools "as is." We are not liable for any interruptions in service or for the accuracy of user-generated content within the community sections of the app.
+                  Harvest App provides these tools &quot;as is.&quot; We are not liable for any interruptions in service or for the accuracy of user-generated content within the community sections of the app.
                 </p>
               </div>
             </div>

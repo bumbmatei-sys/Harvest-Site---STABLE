@@ -275,7 +275,7 @@ const Profile: React.FC<ProfileProps> = ({ onNavigate, onGoToCourses, onGoToPart
 
           {/* Profile Info */}
           <div className="flex flex-col items-center mt-auto mb-4">
-            <h2 className="text-3xl font-serif font-bold text-white mb-2">{userName}</h2>
+            <h2 className="text-3xl font-bold text-white mb-2">{userName}</h2>
             <div className="bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 text-white text-[10px] font-bold tracking-wider border border-white/10">
               <BadgeCheck size={14} className="text-[#e6b325]" />
               MEMBER SINCE 2026
@@ -289,7 +289,7 @@ const Profile: React.FC<ProfileProps> = ({ onNavigate, onGoToCourses, onGoToPart
         
         {/* Ready to grow card */}
         <div className="bg-white dark:bg-[#252a36] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 text-center transition-colors duration-300">
-          <h3 className="text-lg font-serif font-bold text-[#1a202c] dark:text-white mb-2">Ready to grow?</h3>
+          <h3 className="text-lg font-bold text-[#1a202c] dark:text-white mb-2">Ready to grow?</h3>
           <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">
             You haven't started any courses yet. Begin your journey today.
           </p>

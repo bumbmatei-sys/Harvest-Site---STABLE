@@ -13,7 +13,7 @@ const StatsSection: React.FC = () => {
               Every single week, hundreds of thousands of people across the world accept Jesus as their Savior. The Kingdom is expanding at an unprecedented rate, and it is a glorious sight.
             </p>
             <p>
-              But with this amazing growth comes a vital question: "What is the retention percentage?"
+              But with this amazing growth comes a vital question: &quot;What is the retention percentage?&quot;
             </p>
             <p>
               How many of these precious souls remain in Christ? How many grow to maturity to fulfill the Great Commandment?

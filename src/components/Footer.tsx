@@ -45,7 +45,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="text-white text-xl font-bold tracking-tight">Harvest</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Providing the digital foundation for the global harvest. We don't just count decisions; we build disciples.
+              Providing the digital foundation for the global harvest. We don&apos;t just count decisions; we build disciples.
             </p>
           </div>
 
