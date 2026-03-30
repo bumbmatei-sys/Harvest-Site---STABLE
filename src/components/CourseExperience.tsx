@@ -1,13 +1,64 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 
 // ─────────────────────────────────────────────
 // HARVEST — Course Experience (Mobile-First)
 // Optimized for phone screens. Desktop still works.
 // Library → Course Overview → Lesson View
 // ─────────────────────────────────────────────
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId: string | undefined;
+    email: string | null | undefined;
+    emailVerified: boolean | undefined;
+    isAnonymous: boolean | undefined;
+    tenantId: string | null | undefined;
+    providerInfo: {
+      providerId: string;
+      displayName: string | null;
+      email: string | null;
+      photoUrl: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData.map(provider => ({
+        providerId: provider.providerId,
+        displayName: provider.displayName,
+        email: provider.email,
+        photoUrl: provider.photoURL
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 const GOLD = "#C9963A";
 const GOLD_LIGHT = "#FBF3E4";
@@ -606,14 +657,22 @@ export default function CourseApp() {
           fetchedAuthors.push({ id: doc.id, ...doc.data() } as Author);
         });
         setAuthors(fetchedAuthors);
+      } catch (error) {
+        handleFirestoreError(error, OperationType.GET, "authors");
+      }
 
+      try {
         const catsSnap = await getDocs(collection(db, "categories"));
         const fetchedCats: string[] = ["All"];
         catsSnap.forEach((doc) => {
           fetchedCats.push(doc.data().name);
         });
         setCategories(fetchedCats);
+      } catch (error) {
+        handleFirestoreError(error, OperationType.GET, "categories");
+      }
 
+      try {
         const coursesSnap = await getDocs(query(collection(db, "courses"), where("status", "==", "published")));
         const fetchedCourses: Course[] = [];
         coursesSnap.forEach((doc) => {
@@ -621,7 +680,7 @@ export default function CourseApp() {
         });
         setCourses(fetchedCourses);
       } catch (error) {
-        console.error("Error fetching course data:", error);
+        handleFirestoreError(error, OperationType.GET, "courses");
       } finally {
         setLoading(false);
       }
