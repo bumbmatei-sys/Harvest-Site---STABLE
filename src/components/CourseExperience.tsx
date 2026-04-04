@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { collection, getDocs, query, where, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import { Bookmark, ArrowLeft, Clock, User, List, ChevronUp, ChevronDown, BookOpen, CheckCircle, ArrowRight } from 'lucide-react';
+import { Bookmark, ArrowLeft, Clock, User, List, ChevronUp, ChevronDown, BookOpen, CheckCircle, ArrowRight, Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
+import ReactPlayer from 'react-player';
 
 // ─────────────────────────────────────────────
 // HARVEST — Course Experience (Mobile-First)
@@ -170,22 +171,215 @@ function extractYouTubeId(url: string | undefined): string | undefined {
   return (match && match[2].length === 11) ? match[2] : undefined;
 }
 
+const formatTime = (seconds: number) => {
+  const date = new Date(seconds * 1000);
+  const hh = date.getUTCHours();
+  const mm = date.getUTCMinutes();
+  const ss = date.getUTCSeconds().toString().padStart(2, '0');
+  if (hh) {
+    return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
+  }
+  return `${mm}:${ss}`;
+};
+
 function BrandedVideoPlayer({ lesson }: BrandedVideoPlayerProps) {
   const videoId = lesson.youtubeId || extractYouTubeId(lesson.youtubeUrl);
+  
+  const [playing, setPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [volume, setVolume] = useState(0.8);
+  const [muted, setMuted] = useState(false);
+  const [played, setPlayed] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [showControls, setShowControls] = useState(true);
+  const [seeking, setSeeking] = useState(false);
+  
+  const playerRef = useRef<ReactPlayer>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handlePlayPause = () => setPlaying(!playing);
+  const handleToggleMuted = () => setMuted(!muted);
+  
+  const handleProgress = (state: { played: number }) => {
+    if (!seeking) {
+      setPlayed(state.played);
+    }
+  };
+  
+  const handleSeekMouseDown = () => setSeeking(true);
+  const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => setPlayed(parseFloat(e.target.value));
+  const handleSeekMouseUp = (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    const target = e.target as HTMLInputElement;
+    playerRef.current?.seekTo(parseFloat(target.value));
+  };
+
+  const handleFullscreen = () => {
+    if (containerRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        containerRef.current.requestFullscreen();
+      }
+    }
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    controlsTimeoutRef.current = setTimeout(() => {
+      if (playing) setShowControls(false);
+    }, 3000);
+  };
+
+  const handleMouseLeave = () => {
+    if (playing) setShowControls(false);
+  };
+
+  if (!videoId) {
+    return (
+      <div style={{ background: "#000", width: "100%", aspectRatio: "16/9", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 13 }}>
+        No Video Content
+      </div>
+    );
+  }
 
   return (
-    <div style={{ background: "#000", width: "100%", aspectRatio: "16/9", position: "relative", overflow: "hidden" }}>
-      {videoId ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?rel=0`}
-          style={{ width: "100%", height: "100%", border: "none" }}
-          title={lesson.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
+    <div 
+      ref={containerRef}
+      style={{ background: "#000", width: "100%", aspectRatio: "16/9", position: "relative", overflow: "hidden" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={() => setShowControls(true)}
+    >
+      <div style={{ width: "100%", height: "100%", pointerEvents: hasStarted ? "none" : "auto" }}>
+        <ReactPlayer
+          ref={playerRef}
+          url={`https://www.youtube.com/watch?v=${videoId}`}
+          width="100%"
+          height="100%"
+          playing={playing}
+          volume={volume}
+          muted={muted}
+          light={true}
+          playIcon={
+            <div 
+              style={{
+                width: 64, height: 64,
+                borderRadius: '50%',
+                background: GOLD_BTN,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              }}
+            >
+              <Play fill="#fff" color="#fff" size={32} style={{ marginLeft: 4 }} />
+            </div>
+          }
+          onClickPreview={() => {
+            setHasStarted(true);
+            setPlaying(true);
+          }}
+          onProgress={handleProgress}
+          onDuration={setDuration}
+          onPlay={() => {
+            setHasStarted(true);
+            setPlaying(true);
+          }}
+          onPause={() => setPlaying(false)}
+          config={{
+            youtube: {
+              playerVars: { 
+                showinfo: 0, 
+                controls: 0, 
+                modestbranding: 1, 
+                rel: 0,
+                disablekb: 1,
+                fs: 0
+              }
+            }
+          }}
         />
-      ) : (
-        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 13 }}>
-          No Video Content
+      </div>
+      
+      {/* Overlay Controls */}
+      {hasStarted && (
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            background: showControls && !playing ? 'rgba(0,0,0,0.4)' : (showControls ? 'rgba(0,0,0,0.1)' : 'transparent'),
+            transition: 'background 0.3s, opacity 0.3s',
+            opacity: showControls ? 1 : 0,
+            pointerEvents: showControls ? 'auto' : 'none',
+          }}
+        >
+          {/* Click area to play/pause */}
+          <div style={{ flex: 1, cursor: 'pointer' }} onClick={handlePlayPause} />
+
+          {/* Big Play Button in Center (when paused) */}
+          {!playing && (
+            <div 
+              onClick={handlePlayPause}
+              style={{
+                position: 'absolute',
+                top: '50%', left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 64, height: 64,
+                borderRadius: '50%',
+                background: GOLD_BTN,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                pointerEvents: 'auto'
+              }}
+            >
+              <Play fill="#fff" color="#fff" size={32} style={{ marginLeft: 4 }} />
+            </div>
+          )}
+
+        {/* Bottom Control Bar */}
+        <div style={{ padding: '12px 16px', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', display: 'flex', alignItems: 'center', gap: 16, pointerEvents: 'auto' }}>
+          <button onClick={handlePlayPause} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0, display: 'flex' }}>
+            {playing ? <Pause fill="#fff" size={20} /> : <Play fill="#fff" size={20} />}
+          </button>
+          
+          <div style={{ color: '#fff', fontSize: 13, fontFamily: 'monospace', minWidth: 80 }}>
+            {formatTime(played * duration)} / {formatTime(duration)}
+          </div>
+
+          {/* Custom Range Slider for Progress */}
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step="any"
+            value={played}
+            onMouseDown={handleSeekMouseDown}
+            onChange={handleSeekChange}
+            onMouseUp={handleSeekMouseUp}
+            onTouchStart={handleSeekMouseDown}
+            onTouchEnd={handleSeekMouseUp}
+            style={{
+              flex: 1,
+              accentColor: GOLD,
+              height: 4,
+              cursor: 'pointer'
+            }}
+          />
+
+          <button onClick={handleToggleMuted} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0, display: 'flex' }}>
+            {muted || volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </button>
+
+          <button onClick={handleFullscreen} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0, display: 'flex' }}>
+            <Maximize size={20} />
+          </button>
+        </div>
         </div>
       )}
     </div>

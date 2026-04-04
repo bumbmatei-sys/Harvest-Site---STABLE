@@ -13,13 +13,13 @@ const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
 // ─────────────────────────────────────────────
 
 const GOLD = "#C9963A";
-const GOLD_LIGHT = "#FBF3E4";
-const GOLD_BTN = "linear-gradient(135deg, #C9963A, #D4A843)";
-const BG = "#F2F4F7";
-const CARD = "#FFFFFF";
-const TEXT = "#111111";
-const TEXT2 = "#6B7280";
-const BORDER = "#E8E8E8";
+const GOLD_LIGHT = "var(--chat-gold-light)";
+const GOLD_BTN = "var(--chat-gold-btn)";
+const BG = "var(--chat-bg)";
+const CARD = "var(--chat-card)";
+const TEXT = "var(--chat-text)";
+const TEXT2 = "var(--chat-text2)";
+const BORDER = "var(--chat-border)";
 
 // ── Types ──────────────────────────────────────
 type Role = "user" | "ai";
@@ -371,6 +371,35 @@ If the user asks something completely unrelated to faith, politely guide them ba
     <div style={{ fontFamily: "'Nunito', sans-serif", background: BG, height: "100%", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+        :root {
+          --chat-bg: #F2F4F7;
+          --chat-card: #FFFFFF;
+          --chat-text: #111111;
+          --chat-text2: #6B7280;
+          --chat-border: #E8E8E8;
+          --chat-gold-light: #FBF3E4;
+          --chat-gold-btn: linear-gradient(135deg, #C9963A, #D4A843);
+        }
+        @media (prefers-color-scheme: dark) {
+          :root {
+            --chat-bg: #111827;
+            --chat-card: #1F2937;
+            --chat-text: #F9FAFB;
+            --chat-text2: #9CA3AF;
+            --chat-border: #374151;
+            --chat-gold-light: #422f09;
+            --chat-gold-btn: linear-gradient(135deg, #B48533, #C0983C);
+          }
+        }
+        .dark {
+          --chat-bg: #111827;
+          --chat-card: #1F2937;
+          --chat-text: #F9FAFB;
+          --chat-text2: #9CA3AF;
+          --chat-border: #374151;
+          --chat-gold-light: #422f09;
+          --chat-gold-btn: linear-gradient(135deg, #B48533, #C0983C);
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         ::-webkit-scrollbar { width: 0; }
         textarea { outline: none; resize: none; }

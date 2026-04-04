@@ -21,7 +21,11 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    try {
+      console.error("Uncaught error:", error.message || String(error), errorInfo.componentStack);
+    } catch (e) {
+      console.error("Uncaught error (could not stringify)");
+    }
   }
 
   public render() {

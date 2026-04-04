@@ -13,6 +13,7 @@ const AllNews = lazy(() => import('./AllNews'));
 const SavedContentTab = lazy(() => import('./SavedContentTab'));
 const CourseExperience = lazy(() => import('./CourseExperience'));
 const AIChat = lazy(() => import('./AIChat'));
+const BiblePage = lazy(() => import('./BiblePage'));
 
 const ChurchMap = dynamic(() => import('./ChurchMap'), { ssr: false });
 
@@ -248,6 +249,10 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigate }) => {
             onBack={() => setActiveBottomTab('home')} 
             onMapInteraction={(interacting) => setIsNavVisible(!interacting)} 
           />
+        ) : activeBottomTab === 'bible' ? (
+          <Suspense fallback={renderLoading()}>
+            <BiblePage />
+          </Suspense>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500">
             <p>{bottomTabs.find(t => t.id === activeBottomTab)?.label} section coming soon.</p>

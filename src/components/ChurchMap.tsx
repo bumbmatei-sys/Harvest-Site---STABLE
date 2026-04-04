@@ -108,7 +108,7 @@ const LocationButton = ({ setUserLocation }: { setUserLocation: (loc: {lat: numb
         e.stopPropagation();
         locateUser();
       }}
-      className="bg-white p-3 rounded-full shadow-md text-gray-700 hover:text-[#d4a017] transition-colors"
+      className="bg-white dark:bg-[#252a36] p-3 rounded-full shadow-md text-gray-700 dark:text-gray-200 hover:text-[#d4a017] dark:hover:text-[#d4a017] transition-colors"
     >
       <LocateFixed size={24} />
     </button>
@@ -163,6 +163,25 @@ const ChurchMap: React.FC<ChurchMapProps> = ({ onBack, onMapInteraction }) => {
   const [highlightedChurchId, setHighlightedChurchId] = useState<string | null>(null);
   const [isChurchDetailsOpen, setIsChurchDetailsOpen] = useState(false);
   const [selectedChurchId, setSelectedChurchId] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check initial dark mode state
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+
+    // Observe changes to the 'dark' class on the html element
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setIsDarkMode(document.documentElement.classList.contains('dark'));
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const fetchChurches = async () => {
@@ -239,7 +258,7 @@ const ChurchMap: React.FC<ChurchMapProps> = ({ onBack, onMapInteraction }) => {
       <div className="absolute top-4 left-4 right-4 z-[1000] flex justify-between items-center pointer-events-none">
         <button 
           onClick={onBack}
-          className="pointer-events-auto bg-white p-3 rounded-full shadow-md text-gray-700 hover:text-[#d4a017] transition-colors"
+          className="pointer-events-auto bg-white dark:bg-[#252a36] p-3 rounded-full shadow-md text-gray-700 dark:text-gray-200 hover:text-[#d4a017] dark:hover:text-[#d4a017] transition-colors"
         >
           <ArrowLeft size={24} />
         </button>
@@ -253,7 +272,7 @@ const ChurchMap: React.FC<ChurchMapProps> = ({ onBack, onMapInteraction }) => {
         <div className="flex flex-col gap-2 pointer-events-auto">
           <button 
             onClick={() => setViewMode(viewMode === 'map' ? 'list' : 'map')}
-            className="bg-white p-3 rounded-full shadow-md text-gray-700 hover:text-[#d4a017] transition-colors flex items-center justify-center"
+            className="bg-white dark:bg-[#252a36] p-3 rounded-full shadow-md text-gray-700 dark:text-gray-200 hover:text-[#d4a017] dark:hover:text-[#d4a017] transition-colors flex items-center justify-center"
           >
             {viewMode === 'map' ? <List size={24} /> : <MapIcon size={24} />}
           </button>
@@ -269,7 +288,10 @@ const ChurchMap: React.FC<ChurchMapProps> = ({ onBack, onMapInteraction }) => {
           attributionControl={false}
         >
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            key={isDarkMode ? 'dark' : 'light'}
+            url={isDarkMode 
+              ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" 
+              : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"}
           />
           <div className="absolute top-20 right-4 z-[1000]">
             <LocationButton setUserLocation={setUserLocation} />
