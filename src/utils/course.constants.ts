@@ -1,0 +1,10 @@
+export const GOLD = "#C9963A";
+export const GOLD_LIGHT = "#FBF3E4";
+export const GOLD_BTN = "linear-gradient(135deg, #C9963A, #D4A843)";
+export const BG = "transparent";
+export const CARD = "#FFFFFF";
+export const TEXT = "#111111";
+export const TEXT2 = "#6B7280";
+export const BORDER = "#E8E8E8";
+export const GREEN = "#16A34A";
+export const GREEN_BG = "#F0FDF4";
