@@ -57,11 +57,10 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 }
 
 interface AuthPageProps {
- onBack: () => void;
  onNavigate: (page: string) => void;
 }
 
-const AuthPage: React.FC<AuthPageProps> = ({ onBack, onNavigate }) => {
+const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
  const [isLogin, setIsLogin] = useState(true);
  const [showEmailForm, setShowEmailForm] = useState(false);
  const [email, setEmail] = useState('');
@@ -227,16 +226,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onBack, onNavigate }) => {
 
  {/* Background Ambience */}
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-primary/10 blur-[150px] rounded-full pointer-events-none mix-blend-overlay z-0"></div>
-
- <div className="absolute top-8 left-8 z-20">
- <button 
- onClick={onBack}
- className="text-white flex items-center gap-2 hover:text-primary transition-colors"
- >
- <span className="material-symbols-outlined">arrow_back</span>
- Back
- </button>
- </div>
 
  <div className="max-w-md w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden z-10 relative">
  <div className="p-8 sm:p-12">

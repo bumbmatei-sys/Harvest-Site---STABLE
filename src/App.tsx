@@ -3,20 +3,7 @@ import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import StatsSection from './components/StatsSection';
-import FeaturesSection from './components/FeaturesSection';
-import FutureSection from './components/FutureSection';
-import CTASection from './components/CTASection';
-import DonationSection from './components/DonationSection';
-import Footer from './components/Footer';
 
-// Lazy load heavy components
-const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
-const ContactSupport = lazy(() => import('./components/ContactSupport'));
-const TermsOfUse = lazy(() => import('./components/TermsOfUse'));
-const FAQ = lazy(() => import('./components/FAQ'));
 const AuthPage = lazy(() => import('./components/AuthPage'));
 const MainApp = lazy(() => import('./components/MainApp'));
 const Onboarding = lazy(() => import('./components/Onboarding'));
@@ -74,7 +61,7 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 }
 
 const App: React.FC = () => {
- const [currentPage, setCurrentPage] = useState('landing');
+ const [currentPage, setCurrentPage] = useState('auth');
  const [isAuthReady, setIsAuthReady] = useState(false);
  const [needsOnboarding, setNeedsOnboarding] = useState(false);
  const currentPageRef = useRef(currentPage);
@@ -90,31 +77,28 @@ const App: React.FC = () => {
  const userDoc = await getDoc(doc(db, 'users', user.uid));
  if (userDoc.exists() && userDoc.data().onboardingCompleted) {
  setNeedsOnboarding(false);
- if (currentPageRef.current === 'landing' || currentPageRef.current === 'auth') {
+ if (currentPageRef.current === 'auth') {
  setCurrentPage('home');
  }
  } else {
  setNeedsOnboarding(true);
- if (currentPageRef.current === 'landing' || currentPageRef.current === 'auth') {
+ if (currentPageRef.current === 'auth') {
  setCurrentPage('onboarding');
  }
  }
  } catch (error) {
- // console.error("Error fetching user doc:", error);
  try {
  handleFirestoreError(error, OperationType.GET, `users/${user.uid}`);
  } catch (e) {
- // Ignore the thrown error so we can continue the auth flow
  }
  setNeedsOnboarding(false);
- if (currentPageRef.current === 'landing' || currentPageRef.current === 'auth') {
+ if (currentPageRef.current === 'auth') {
  setCurrentPage('home');
  }
  }
  } else {
- // Only redirect to landing if we are on a protected page
- if (currentPageRef.current !== 'landing' && currentPageRef.current !== 'auth' && currentPageRef.current !== 'privacy-policy' && currentPageRef.current !== 'terms-of-use' && currentPageRef.current !== 'contact-support' && currentPageRef.current !== 'faq') {
- setCurrentPage('landing');
+ if (currentPageRef.current !== 'auth') {
+ setCurrentPage('auth');
  }
  }
  setIsAuthReady(true);
@@ -153,14 +137,6 @@ const App: React.FC = () => {
  );
  }
 
- if (currentPage === 'auth') {
- return (
- <Suspense fallback={renderLoading()}>
- <AuthPage onBack={() => navigateTo('landing')} onNavigate={navigateTo} />
- </Suspense>
- );
- }
-
  if (currentPage === 'admin') {
  return (
  <Suspense fallback={renderLoading()}>
@@ -169,75 +145,10 @@ const App: React.FC = () => {
  );
  }
 
- if (currentPage === 'privacy-policy') {
  return (
- <div className="min-h-screen flex flex-col font-sans">
- <Navbar isHome={false} onNavigate={navigateTo} />
- <main className="flex-grow">
  <Suspense fallback={renderLoading()}>
- <PrivacyPolicy onBack={() => navigateTo('landing')} />
+ <AuthPage onNavigate={navigateTo} />
  </Suspense>
- </main>
- <Footer onNavigate={navigateTo} />
- </div>
- );
- }
-
- if (currentPage === 'terms-of-use') {
- return (
- <div className="min-h-screen flex flex-col font-sans">
- <Navbar isHome={false} onNavigate={navigateTo} />
- <main className="flex-grow">
- <Suspense fallback={renderLoading()}>
- <TermsOfUse onBack={() => navigateTo('landing')} />
- </Suspense>
- </main>
- <Footer onNavigate={navigateTo} />
- </div>
- );
- }
-
- if (currentPage === 'contact-support') {
- return (
- <div className="min-h-screen flex flex-col font-sans">
- <Navbar isHome={false} onNavigate={navigateTo} />
- <main className="flex-grow">
- <Suspense fallback={renderLoading()}>
- <ContactSupport onBack={() => navigateTo('landing')} />
- </Suspense>
- </main>
- <Footer onNavigate={navigateTo} />
- </div>
- );
- }
-
- if (currentPage === 'faq') {
- return (
- <div className="min-h-screen flex flex-col font-sans">
- <Navbar isHome={false} onNavigate={navigateTo} />
- <main className="flex-grow">
- <Suspense fallback={renderLoading()}>
- <FAQ onBack={() => navigateTo('landing')} />
- </Suspense>
- </main>
- <Footer onNavigate={navigateTo} />
- </div>
- );
- }
-
- return (
- <div className="min-h-screen flex flex-col font-sans">
- <Navbar isHome={true} onNavigate={navigateTo} />
- <main>
- <Hero onNavigate={navigateTo} />
- <StatsSection />
- <FeaturesSection onNavigate={navigateTo} />
- <FutureSection />
- <CTASection onNavigate={navigateTo} />
- <DonationSection />
- </main>
- <Footer onNavigate={navigateTo} />
- </div>
  );
 };
 
