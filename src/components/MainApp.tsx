@@ -4,15 +4,14 @@ import { Home, BookOpen, MessageCircle, Map as MapIcon, User, Play } from 'lucid
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-// Lazy load heavy components
-const Profile = lazy(() => import('./Profile'));
-const PartnerWithUsTab = lazy(() => import('./PartnerWithUsTab'));
-const BlogTab = lazy(() => import('./BlogTab'));
-const NewsTab = lazy(() => import('./NewsTab'));
-const AllNews = lazy(() => import('./AllNews'));
-const CourseExperience = lazy(() => import('../components/CoursePage'));
-const AIChat = lazy(() => import('./AIChat'));
-const BiblePage = lazy(() => import('./BiblePage'));
+import Profile from './Profile';
+import PartnerWithUsTab from './PartnerWithUsTab';
+import BlogTab from './BlogTab';
+import NewsTab from './NewsTab';
+import AllNews from './AllNews';
+import CourseExperience from '../components/CoursePage';
+import AIChat from './AIChat';
+import BiblePage from './BiblePage';
 
 const ChurchMap = dynamic(() => import('./ChurchMap'), { ssr: false });
 
@@ -122,29 +121,23 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigate }) => {
 
  if (fullScreenView.type === 'all-news') {
  return (
- <Suspense fallback={renderLoading()}>
  <AllNews onBack={() => setFullScreenView({type: 'none'})} />
- </Suspense>
  );
  }
 
  if (fullScreenView.type === 'article' && fullScreenView.data) {
  return (
- <Suspense fallback={renderLoading()}>
  <BlogTab initialPost={fullScreenView.data} onBack={() => setFullScreenView({type: 'none'})} isFullScreen={true} />
- </Suspense>
  );
  }
 
  if (fullScreenView.type === 'course' && fullScreenView.data) {
  return (
- <Suspense fallback={renderLoading()}>
  <CourseExperience 
  initialCourseId={fullScreenView.data.courseId} 
  initialLessonId={fullScreenView.data.lessonId}
  onBack={() => setFullScreenView({type: 'none'})} 
  />
- </Suspense>
  );
  }
 
@@ -196,7 +189,6 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigate }) => {
  className="absolute w-full h-full p-4 space-y-6"
  >
  {/* Content based on activeTopTab */}
- <Suspense fallback={renderLoading()}>
  {activeTopTab === 'news' && (
  <NewsTab 
  onOpenAllNews={() => setFullScreenView({type: 'all-news'})} 
@@ -217,32 +209,25 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigate }) => {
  <p>{topTabs.find(t => t.id === activeTopTab)?.label} content coming soon.</p>
  </div>
  )}
- </Suspense>
  </motion.div>
  </AnimatePresence>
  </div>
  ) : activeBottomTab === 'profile' ? (
- <Suspense fallback={renderLoading()}>
  <Profile 
  onNavigate={onNavigate} 
  onGoToCourses={() => { setActiveBottomTab('home'); setActiveTopTab('courses'); }} 
  onGoToPartner={() => { setActiveBottomTab('home'); setActiveTopTab('partner'); }}
  onGoToMap={() => setActiveBottomTab('map')}
  />
- </Suspense>
  ) : activeBottomTab === 'chat' ? (
- <Suspense fallback={renderLoading()}>
  <AIChat onBack={() => setActiveBottomTab('home')} />
- </Suspense>
  ) : activeBottomTab === 'map' ? (
  <ChurchMap 
  onBack={() => setActiveBottomTab('home')} 
  onMapInteraction={(interacting) => setIsNavVisible(!interacting)} 
  />
  ) : activeBottomTab === 'bible' ? (
- <Suspense fallback={renderLoading()}>
  <BiblePage />
- </Suspense>
  ) : (
  <div className="flex flex-col items-center justify-center h-full text-gray-400">
  <p>{bottomTabs.find(t => t.id === activeBottomTab)?.label} section coming soon.</p>

@@ -4,10 +4,10 @@ import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-const AuthPage = lazy(() => import('./components/AuthPage'));
-const MainApp = lazy(() => import('./components/MainApp'));
-const Onboarding = lazy(() => import('./components/Onboarding'));
-const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+import AuthPage from './components/AuthPage';
+import MainApp from './components/MainApp';
+import Onboarding from './components/Onboarding';
+import AdminDashboard from './components/AdminDashboard';
 
 enum OperationType {
  CREATE = 'create',
@@ -123,32 +123,24 @@ const App: React.FC = () => {
 
  if (currentPage === 'onboarding') {
  return (
- <Suspense fallback={renderLoading()}>
  <Onboarding onComplete={() => navigateTo('home')} />
- </Suspense>
  );
  }
 
  if (currentPage === 'home') {
  return (
- <Suspense fallback={renderLoading()}>
  <MainApp onNavigate={navigateTo} />
- </Suspense>
  );
  }
 
  if (currentPage === 'admin') {
  return (
- <Suspense fallback={renderLoading()}>
  <AdminDashboard onNavigate={navigateTo} />
- </Suspense>
  );
  }
 
  return (
- <Suspense fallback={renderLoading()}>
  <AuthPage onNavigate={navigateTo} />
- </Suspense>
  );
 };
 

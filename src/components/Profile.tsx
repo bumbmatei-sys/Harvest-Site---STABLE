@@ -270,7 +270,7 @@ const Profile: React.FC<ProfileProps> = ({ onNavigate, onGoToCourses, onGoToPart
  </div>
 
  {/* Content Section */}
- <div className="px-4 -mt-12 relative z-10 space-y-6">
+ <div className="px-4 mt-6 relative z-10 space-y-6">
  
  {/* Account Settings */}
  <div>
