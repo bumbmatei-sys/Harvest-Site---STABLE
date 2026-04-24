@@ -78,6 +78,7 @@ interface UserRecord {
   city: string;
   country: string;
   phone: string;
+  acceptedJesus?: boolean;
   registeredAt: string;
 }
 
@@ -126,11 +127,11 @@ const filterByLocation = (users: UserRecord[], q: string): UserRecord[] => {
 };
 
 const downloadUsersCSV = (users: UserRecord[], filename: string): void => {
-  const headers = ["Name", "Phone Number", "Email", "Registration Date", "Country", "City"];
+  const headers = ["Name", "Phone Number", "Email", "Registration Date", "Country", "City", "Accepted Jesus"];
   const rows = users.map((u) => [
     u.name, u.phone || "Unknown", u.email,
     new Date(u.registeredAt).toLocaleDateString("en-US"),
-    u.country || "Unknown", u.city || "Unknown",
+    u.country || "Unknown", u.city || "Unknown", u.acceptedJesus !== undefined ? (u.acceptedJesus ? "Yes" : "No") : "Unknown",
   ]);
   const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -143,11 +144,11 @@ const downloadUsersCSV = (users: UserRecord[], filename: string): void => {
 };
 
 const downloadCSV = (users: UserRecord[], period: TimePeriod, location: string): void => {
-  const headers = ["Name", "Phone Number", "Email", "Registration Date", "Country", "City"];
+  const headers = ["Name", "Phone Number", "Email", "Registration Date", "Country", "City", "Accepted Jesus"];
   const rows = users.map((u) => [
     u.name, u.phone || "Unknown", u.email,
     new Date(u.registeredAt).toLocaleDateString("en-US"),
-    u.country || "Unknown", u.city || "Unknown",
+    u.country || "Unknown", u.city || "Unknown", u.acceptedJesus !== undefined ? (u.acceptedJesus ? "Yes" : "No") : "Unknown",
   ]);
   const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -415,6 +416,7 @@ export default function AnalyticsAndRoles({ currentUserRole, currentUserPermissi
             city: data.city || "",
             country: data.country || "",
             phone: data.phone || "",
+            acceptedJesus: data.acceptedJesus,
             registeredAt: data.createdAt || new Date().toISOString()
           };
           usersList.push(user);

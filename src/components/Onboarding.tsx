@@ -65,6 +65,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
  const [country, setCountry] = useState('');
  const [city, setCity] = useState('');
  const [phone, setPhone] = useState('');
+  const [acceptedJesus, setAcceptedJesus] = useState('');
  const [loading, setLoading] = useState(false);
  const [gpsLoading, setGpsLoading] = useState(false);
  const [error, setError] = useState('');
@@ -146,7 +147,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
  const handleSubmit = async (e: React.FormEvent) => {
  e.preventDefault();
- if (!name || !country || !city || !phone) {
+ if (!name || !country || !city || !phone || !acceptedJesus) {
  setError('Please fill in all fields.');
  return;
  }
@@ -165,7 +166,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
  country,
  city,
  phone,
- onboardingCompleted: true
+        acceptedJesus: acceptedJesus === 'yes',
+        onboardingCompleted: true
  });
  } catch (err) {
  handleFirestoreError(err, OperationType.UPDATE, `users/${user.uid}`);
@@ -265,8 +267,42 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
  onChange={(e) => setPhone(e.target.value)}
  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
  placeholder="e.g. +1 234 567 8900"
- />
- </div>
+              />
+            </div>
+
+            <div className="relative z-30 mt-4">
+              <label className="block text-sm font-bold text-gray-200 mb-2">Have you accepted Jesus?</label>
+              <div className="flex gap-4">
+                <label className="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="acceptedJesus"
+                    value="yes"
+                    checked={acceptedJesus === 'yes'}
+                    onChange={(e) => setAcceptedJesus(e.target.value)}
+                    className="peer sr-only"
+                    required
+                  />
+                  <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-center text-white peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-primary transition-all font-semibold">
+                    Yes
+                  </div>
+                </label>
+                <label className="flex-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="acceptedJesus"
+                    value="no"
+                    checked={acceptedJesus === 'no'}
+                    onChange={(e) => setAcceptedJesus(e.target.value)}
+                    className="peer sr-only"
+                    required
+                  />
+                  <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-center text-white peer-checked:bg-white/20 peer-checked:border-white/50 transition-all font-semibold">
+                    No
+                  </div>
+                </label>
+              </div>
+            </div>
 
  <button
  type="submit"

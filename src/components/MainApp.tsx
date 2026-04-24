@@ -184,7 +184,7 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigate }) => {
  }}
  drag="x"
  dragConstraints={{ left: 0, right: 0 }}
- dragElastic={1}
+ dragElastic={{ left: activeTopTab === topTabs[topTabs.length - 1].id ? 0 : 1, right: activeTopTab === topTabs[0].id ? 0 : 1 }}
  onDragEnd={handleDragEnd}
  className="absolute w-full h-full p-4 space-y-6"
  >

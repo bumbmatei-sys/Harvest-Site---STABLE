@@ -372,7 +372,7 @@ If the user asks something completely unrelated to faith, politely guide them ba
  const prompt = `${contextStr}\n\nChat History:\n${chatHistory}\n\nUser: ${text}`;
 
  const response = await ai.models.generateContent({
- model: "gemini-3-flash-preview",
+ model: "gemini-3.1-flash-lite-preview",
  contents: prompt,
  config: {
  systemInstruction,
